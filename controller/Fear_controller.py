@@ -76,19 +76,23 @@ class Fear_controller(Actuation):
             self.init_pos = False
 
         sensor = self.agent.get_perception()
-        if (abs(sensor[1] - sensor[2]))>=0.001:
-            if sensor[1] < sensor[2]:
-                speed = 5  # Example proportional control
-                turn_angle = -1 #turn left
-            elif sensor[1] > sensor[2]:
-                speed = 5  # Example proportional control
-                turn_angle = 1
-            else:
-                speed=1
-                turn_angle=0
+        
+        delta_s = abs(sensor[1] - sensor[2])
+
+        # Define a base speed and a sensitivity factor for how quickly the robot responds to light differences
+        base_speed = 5
+        sensitivity = 50  # Adjust this to change how reactive the robot is to light differences
+
+        # Calculate speed based on light intensity difference
+        speed = base_speed + sensitivity * delta_s
+
+        # Determine the turning direction based on which sensor detects more light
+        if sensor[1] > sensor[2]:
+            turn_angle = -5  
+        elif sensor[1] < sensor[2]:
+            turn_angle = 5  
         else:
-                speed=1
-                turn_angle=0
+            turn_angle = 0
 
 
         self.update_position(speed, turn_angle)
