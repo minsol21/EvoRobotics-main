@@ -61,14 +61,14 @@ class My_environment(Environment):
         Returns: 3 dimensional light distribution tuple (x,y,light_intensity)
         """
         light_source_position = np.array([self.config['world_width'] / 2, self.config['world_height'] / 2])
-        max_light_intensity = 100  # Maximum light intensity at the source
+        max_light_intensity = 60  # Maximum light intensity at the source
 
         light_dist = np.zeros((self.config['world_width'], self.config['world_height']))
 
         for x in range(self.config['world_width']):
             for y in range(self.config['world_height']):
                 distance = np.linalg.norm(np.array([x, y]) - light_source_position)
-                light_dist[x, y] = max(0, max_light_intensity - distance)
+                light_dist[x, y] = max(0, max_light_intensity - distance/3)
 
         return light_dist
 
