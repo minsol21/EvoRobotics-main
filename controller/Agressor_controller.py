@@ -7,11 +7,13 @@ from sensors.light_sensor_R import LightIntensitySensor_R
 import yaml
 import numpy as np
 import math
-
+from swarmy.environment import Environment
 
 class Agressor_controller(Actuation):
 
-    def __init__(self, agent,config):
+    def __init__(self,agent, config):
+
+        # rest of your code
         super().__init__(agent)
         """
         self.linear_velocity = <your value> # set the linear velocity of the robot
@@ -22,8 +24,7 @@ class Agressor_controller(Actuation):
         self.config = config
         self.init_pos = True            # flag to set initial position of the robot
         # Initialize sensors
-        self.light_sensor_L = LightIntensitySensor_L(Perception)
-        self.light_sensor_R = LightIntensitySensor_R(Perception)
+
 
 
     def update_position(self, speed, turn_angle):
@@ -72,11 +73,18 @@ class Agressor_controller(Actuation):
             self.agent.initial_position()
             self.init_pos = False
 
-        light_intensity_L = self.light_sensor_L.sensor(self)
-        light_intensity_R = self.light_sensor_R.sensor(self)
-
+        sensor = self.agent.get_perception()
+        if sensor[1] >= sensor[2]:
+            speed = 5  # Example proportional control
+            turn_angle = -10 #turn left
+        elif sensor[1] < sensor[2]:
+            speed = 5  # Example proportional control
+            turn_angle = 10
+        else:
+            speed=1
+            turn_angle=0
         #delta_s = abs(light_intensity_L - light_intensity_R)
-
+        '''
         if light_intensity_L > light_intensity_R:  # Adjust threshold based on expected light intensity differences
             speed = 5  # Example proportional control
             turn_angle = -10 #turn left
@@ -87,7 +95,7 @@ class Agressor_controller(Actuation):
         else: 
             speed=0
             turn_angle=0
-
+        '''
         self.update_position(speed, turn_angle)
 
 

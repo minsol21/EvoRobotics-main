@@ -21,11 +21,7 @@ class Fear_controller(Actuation):
         self.angle_velocity=5
         self.config = config
         self.init_pos = True            # flag to set initial position of the robot
-        # Initialize sensors
-        self.light_sensor_L = LightIntensitySensor_L(Perception)
-        self.light_sensor_R = LightIntensitySensor_R(Perception)
-        #self.light_sensor_L = LightIntensitySensor_L(agent, config['environment'], config)
-        #self.light_sensor_R = LightIntensitySensor_R(agent, config['environment'], config)
+
 
 
     def update_position(self, speed, turn_angle):
@@ -54,7 +50,7 @@ class Fear_controller(Actuation):
         self.agent.set_position(new_x, new_y, new_heading)
 
         # Print out the values for debugging
-        print(f"x: {x}, y: {y}, gamma: {gamma}, dx: {dx}, dy: {dy}, new_x: {new_x}, new_y: {new_y}, new_heading: {new_heading}")
+        #print(f"x: {x}, y: {y}, gamma: {gamma}, dx: {dx}, dy: {dy}, new_x: {new_x}, new_y: {new_y}, new_heading: {new_heading}")
 
     def controller(self):
         """
@@ -74,20 +70,19 @@ class Fear_controller(Actuation):
             self.agent.initial_position()
             self.init_pos = False
 
-        light_intensity_L = self.light_sensor_L.sensor(self)
-        light_intensity_R = self.light_sensor_R.sensor(self)
+        #Set initial robot position and direction
+        if self.init_pos:
+            self.agent.initial_position()
+            self.init_pos = False
 
-        #delta_s = abs(light_intensity_L - light_intensity_R)
-
-        if light_intensity_L > light_intensity_R:  
-            speed = 5  
-            turn_angle = 10 #turn right
-        
-        elif light_intensity_L < light_intensity_R : 
-            speed = 5  
-            turn_angle = -10
-        
-        else: 
+        sensor = self.agent.get_perception()
+        if sensor[1] >= sensor[2]:
+            speed = 5  # Example proportional control
+            turn_angle = -10 #turn left
+        elif sensor[1] < sensor[2]:
+            speed = 5  # Example proportional control
+            turn_angle = 10
+        else:
             speed=0
             turn_angle=0
 
