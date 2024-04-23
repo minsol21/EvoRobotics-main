@@ -76,19 +76,24 @@ class Fear_controller(Actuation):
             self.init_pos = False
 
         sensor = self.agent.get_perception()
+        diff = abs(sensor[1] - sensor[2])
         if (abs(sensor[1] - sensor[2]))>=0.001:
-            if sensor[1] < sensor[2]:
-                speed = 5  # Example proportional control
-                turn_angle = -1 #turn left
-            elif sensor[1] > sensor[2]:
-                speed = 5  # Example proportional control
-                turn_angle = 1
-            else:
-                speed=1
-                turn_angle=0
+            if sensor[1] >= sensor[2]:
+                speed = 5*diff  # Example proportional control
+                turn_angle = -10 #turn left
+            elif sensor[1] < sensor[2]:
+                speed = 5*diff  # Example proportional control
+                turn_angle = 10
         else:
-                speed=1
+            if sensor[1]+ sensor[2]<=0.05:#very dark
+                speed=0.1
                 turn_angle=0
+            elif sensor[1]+ sensor[2] >1.5:#bright
+                speed=10
+                turn_angle=0
+            else:
+                speed=10*diff
+                turn_angle=1
 
 
         self.update_position(speed, turn_angle)
