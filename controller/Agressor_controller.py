@@ -74,15 +74,19 @@ class Agressor_controller(Actuation):
             self.init_pos = False
 
         sensor = self.agent.get_perception()
-        if sensor[1] >= sensor[2]:
-            speed = 5  # Example proportional control
-            turn_angle = -10 #turn left
-        elif sensor[1] < sensor[2]:
-            speed = 5  # Example proportional control
-            turn_angle = 10
+        if (abs(sensor[1] - sensor[2]))>=0.001:
+            if sensor[1] > sensor[2]:
+                speed = 5  # Example proportional control
+                turn_angle = -1 #turn left
+            elif sensor[1] < sensor[2]:
+                speed = 5  # Example proportional control
+                turn_angle = 1
+            else:
+                speed=1
+                turn_angle=0
         else:
-            speed=1
-            turn_angle=0
+                speed=1
+                turn_angle=0
         #delta_s = abs(light_intensity_L - light_intensity_R)
         '''
         if light_intensity_L > light_intensity_R:  # Adjust threshold based on expected light intensity differences
